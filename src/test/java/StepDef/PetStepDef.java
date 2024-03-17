@@ -11,8 +11,7 @@ import java.io.IOException;
 public class PetStepDef {
 
     PetReqModel petReqModel;
-    String statusUpdatedValue;
-
+    int receivedStatusCode;
     @Given("User Create new Pet")
     public void userCreateNewPet() throws IOException {
         petReqModel = PetUtils.createPetRequest();
@@ -23,22 +22,28 @@ public class PetStepDef {
     @Then("User update the status of existing Pet with value {string}")
     public void userUpdateTheStatusOfExistingPetWithValueUnavailable(String statusNewValue) throws IOException {
         petReqModel = PetUtils.updatePetRequest(statusNewValue);
-        statusUpdatedValue = statusNewValue;
         Assertions.assertEquals(petReqModel.status, statusNewValue);
 
 
 
     }
 
-    @Then("User should check on the updated status value")
-    public void userShouldCheckOnTheUpdatedStatusValue() throws IOException {
+    @Then("Verify that Pet Status has been changed to {string} Correctly")
+    public void userShouldCheckOnTheUpdatedStatusValue(String NewStatus) throws IOException {
         petReqModel = PetUtils.getPetWithID();
-        Assertions.assertEquals(statusUpdatedValue ,petReqModel.status);
+        Assertions.assertEquals(NewStatus ,petReqModel.status);
     }
 
-    @Then("User delete the created new Pet and the request should be with status code {int}")
-    public void userDeleteTheCreatedNewPet(int StatusCode) throws IOException {
-        int receivedStatusCode = PetUtils.deletePetWithID();
+    @Then("User delete the created new Pet")
+    public void userDeleteTheCreatedNewPet() throws IOException {
+        receivedStatusCode= PetUtils.deletePetWithID();
+
+    }
+
+    @Then("Verify that the request should be with status code {int}")
+    public void theRequestShouldBeWithStatusCode(int StatusCode) {
         Assertions.assertEquals(StatusCode, receivedStatusCode);
     }
+
+
 }
